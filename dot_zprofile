@@ -1,0 +1,22 @@
+
+# PATH and env setup for login shells.
+# Interactive-only setup (oh-my-zsh, completions, prompts, hooks) stays in .zshrc.
+
+# Auto-dedupe PATH (zsh keeps $path and $PATH in sync; -U makes $path unique)
+typeset -U path PATH
+
+# Homebrew (sets PATH, MANPATH, INFOPATH, HOMEBREW_* env vars)
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+# User-local binaries
+export PATH="$HOME/.local/bin:$PATH"
+
+# Ruby (Homebrew install) and gems
+export PATH="/opt/homebrew/opt/ruby/bin:$HOME/.gem/bin:$PATH"
+
+# Bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# Rust / cargo
+. "$HOME/.cargo/env"
