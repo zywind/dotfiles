@@ -7,6 +7,10 @@ typeset -U path PATH
 # Homebrew (sets PATH, MANPATH, INFOPATH, HOMEBREW_* env vars)
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
+# Default editor
+export EDITOR='nvim'
+export VISUAL='nvim'
+
 # User-local binaries (~/.local/bin includes uv-managed Python shims)
 export PATH="$HOME/.local/bin:$PATH"
 
