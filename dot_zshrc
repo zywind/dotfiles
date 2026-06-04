@@ -29,9 +29,20 @@ eval "$(uv generate-shell-completion zsh)"
 # starship prompt
 eval "$(starship init zsh)"
 
+# zoxide (smart cd: `z`, `zi`)
+eval "$(zoxide init zsh)"
+
+# direnv (per-directory env)
+eval "$(direnv hook zsh)"
+
 # === Aliases ===
 alias python='python3'
 alias tf="terraform"
+alias cat='bat --paging=never'
+# eza (modern ls) — non-shadowing names, leaves `ls` intact
+alias ll='eza -lah --git --group-directories-first'
+alias la='eza -a'
+alias lt='eza --tree --level=2'
 
 # === Hooks ===
 

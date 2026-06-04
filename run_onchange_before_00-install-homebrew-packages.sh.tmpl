@@ -1,0 +1,43 @@
+#!/bin/bash
+# Installs Homebrew (if missing) and the CLI tools the dotfiles depend on.
+# run_onchange_: re-runs automatically whenever this file's contents change,
+# so adding a package below installs it on the next `chezmoi apply`.
+set -eufo pipefail
+
+{{ if eq .chezmoi.os "darwin" -}}
+# Install Homebrew on a fresh Mac
+if ! command -v brew >/dev/null 2>&1; then
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+# Make brew available in this non-login script
+eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shellenv)"
+
+brew bundle --no-lock --file=/dev/stdin <<'BREWFILE'
+tap "hashicorp/tap"
+
+# Shell + prompt
+brew "git"
+brew "starship"
+
+# Navigation / search / completion
+brew "fzf"
+brew "zoxide"
+brew "fd"
+brew "ripgrep"
+brew "eza"
+brew "bat"
+
+# Dev environment
+brew "fnm"
+brew "uv"
+brew "direnv"
+brew "gh"
+brew "chezmoi"
+brew "hashicorp/tap/terraform"
+BREWFILE
+
+# bun is distributed via its own installer (lives in ~/.bun), not Homebrew
+if ! command -v bun >/dev/null 2>&1 && [ ! -x "$HOME/.bun/bin/bun" ]; then
+  curl -fsSL https://bun.sh/install | bash
+fi
+{{ end -}}
