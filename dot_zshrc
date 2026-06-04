@@ -18,7 +18,7 @@ zstyle ':fzf-tab:*' switch-group '<' '>'
 eval "$(fnm env --use-on-cd --shell zsh)"
 
 # fzf
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+source <(fzf --zsh)
 
 # uv shell completion
 eval "$(uv generate-shell-completion zsh)"
