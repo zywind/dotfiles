@@ -17,6 +17,7 @@ tap "hashicorp/tap"
 
 # Shell + prompt
 brew "starship"
+brew "tmux"
 
 # Git
 brew "git"
@@ -34,6 +35,9 @@ brew "eza"
 brew "bat"
 brew "ouch"
 
+# Editor (LazyVim config is managed in ~/.config/nvim; lazy.nvim self-bootstraps)
+brew "neovim"
+
 # Dev environment
 brew "fnm"
 brew "uv"
@@ -46,6 +50,12 @@ brew "hashicorp/tap/terraform"
 brew "jq"
 brew "bottom"
 brew "tlrc"
+
+# Apps
+cask "iterm2"
+
+# Fonts (Nerd Font for LazyVim / terminal icons)
+cask "font-hack-nerd-font"
 BREWFILE
 
 # bun is distributed via its own installer (lives in ~/.bun), not Homebrew
