@@ -45,6 +45,7 @@ alias la='eza -a'
 alias lt='eza --tree --level=2'
 alias grep='ugrep'                                   # fast, grep-compatible
 alias x='ouch decompress'                            # extract any archive
+alias lg='lazygit'                                   # git TUI
 
 # === ssh-agent ===
 # Reuse a running agent, or start one and cache its env in ~/.ssh/ssh-agent
