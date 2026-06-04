@@ -1,0 +1,11 @@
+#!/bin/bash
+# Point iTerm2 at the chezmoi-managed custom preferences folder so it loads
+# the tracked com.googlecode.iterm2.plist. Runs after the plist is applied.
+set -eufo pipefail
+
+{{ if eq .chezmoi.os "darwin" -}}
+if [ -f "$HOME/.config/iterm2/com.googlecode.iterm2.plist" ]; then
+  defaults write com.googlecode.iterm2 PrefsCustomFolder -string "$HOME/.config/iterm2"
+  defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
+fi
+{{ end -}}
