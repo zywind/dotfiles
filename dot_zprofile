@@ -20,6 +20,3 @@ export PATH="/opt/homebrew/opt/ruby/bin:$HOME/.gem/bin:$PATH"
 # Bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-
-# Rust / cargo
-. "$HOME/.cargo/env"
