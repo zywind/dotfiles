@@ -1,0 +1,7 @@
+{{- $name := promptStringOnce . "name" "Full name for git" -}}
+{{- $email := promptStringOnce . "email" "Git email address" -}}
+
+# Generated on `chezmoi init`. Identity is stored here (local only), never in the repo.
+[data]
+    name = {{ $name | quote }}
+    email = {{ $email | quote }}
