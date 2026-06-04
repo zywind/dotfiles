@@ -16,16 +16,23 @@ brew bundle --no-lock --file=/dev/stdin <<'BREWFILE'
 tap "hashicorp/tap"
 
 # Shell + prompt
-brew "git"
 brew "starship"
+
+# Git
+brew "git"
+brew "git-lfs"
+brew "git-delta"
+brew "lazygit"
 
 # Navigation / search / completion
 brew "fzf"
 brew "zoxide"
 brew "fd"
 brew "ripgrep"
+brew "ugrep"
 brew "eza"
 brew "bat"
+brew "ouch"
 
 # Dev environment
 brew "fnm"
@@ -34,6 +41,11 @@ brew "direnv"
 brew "gh"
 brew "chezmoi"
 brew "hashicorp/tap/terraform"
+
+# Utilities
+brew "jq"
+brew "bottom"
+brew "tlrc"
 BREWFILE
 
 # bun is distributed via its own installer (lives in ~/.bun), not Homebrew
