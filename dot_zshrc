@@ -66,6 +66,6 @@ if [[ -z "$SSH_AUTH_SOCK" ]]; then
   if ! pgrep -u "$USER" ssh-agent >/dev/null; then
     ssh-agent -s >"$HOME/.ssh/ssh-agent"
   fi
-  eval "$(<"$HOME/.ssh/ssh-agent")" >/dev/null
+  [[ -r "$HOME/.ssh/ssh-agent" ]] && eval "$(<"$HOME/.ssh/ssh-agent")" >/dev/null
   ssh-add "$HOME/.ssh/id_rsa" 2>/dev/null
 fi
