@@ -20,7 +20,7 @@ for brewbin in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linux
 done
 
 # --- CLI tools (shared across macOS and Linux) ---
-brew bundle --no-lock --file=/dev/stdin <<'BREWFILE'
+brew bundle --file=/dev/stdin <<'BREWFILE'
 tap "hashicorp/tap"
 
 # Shell + prompt
@@ -62,7 +62,7 @@ BREWFILE
 
 {{ if eq .chezmoi.os "darwin" -}}
 # --- macOS-only GUI apps & fonts (casks don't exist on Linuxbrew) ---
-brew bundle --no-lock --file=/dev/stdin <<'BREWFILE'
+brew bundle --file=/dev/stdin <<'BREWFILE'
 # Apps
 cask "iterm2"
 
