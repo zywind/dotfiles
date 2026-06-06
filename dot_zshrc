@@ -1,3 +1,13 @@
+# === Load login-shell env in non-login shells ===
+# zsh sources .zprofile only for LOGIN shells. macOS terminals (iTerm2) open
+# login shells, but most Linux terminals (GNOME Terminal, etc.) open non-login
+# interactive shells — which would otherwise miss PATH/Homebrew setup and fail
+# to find git, starship, fnm, … Source it ourselves only when not a login shell
+# (login shells already ran it, so this is a no-op there — e.g. on macOS).
+if [[ ! -o login ]] && [[ -f "$HOME/.zprofile" ]]; then
+  source "$HOME/.zprofile"
+fi
+
 # === Always-on (interactive AND non-interactive) ===
 # Above the interactive guard so scripts and tools that source .zshrc
 # (e.g. snapshotting harnesses) still get these.
