@@ -4,8 +4,11 @@
 # Auto-dedupe PATH (zsh keeps $path and $PATH in sync; -U makes $path unique)
 typeset -U path PATH
 
-# Homebrew (sets PATH, MANPATH, INFOPATH, HOMEBREW_* env vars)
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# Homebrew (sets PATH, MANPATH, INFOPATH, HOMEBREW_* env vars).
+# macOS: /opt/homebrew (Apple Silicon) or /usr/local (Intel); Linux: /home/linuxbrew.
+for brewbin in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+  [[ -x "$brewbin" ]] && eval "$("$brewbin" shellenv)" && break
+done
 
 # Default editor
 export EDITOR='nvim'
@@ -14,8 +17,9 @@ export VISUAL='nvim'
 # User-local binaries (~/.local/bin includes uv-managed Python shims)
 export PATH="$HOME/.local/bin:$PATH"
 
-# Ruby (Homebrew install) and gems
-export PATH="/opt/homebrew/opt/ruby/bin:$HOME/.gem/bin:$PATH"
+# Ruby (Homebrew keg-only formula, macOS path) and user gems
+[[ -d /opt/homebrew/opt/ruby/bin ]] && export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+export PATH="$HOME/.gem/bin:$PATH"
 
 # Bun
 export BUN_INSTALL="$HOME/.bun"

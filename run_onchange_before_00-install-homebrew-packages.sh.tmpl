@@ -4,14 +4,22 @@
 # so adding a package below installs it on the next `chezmoi apply`.
 set -eufo pipefail
 
-{{ if eq .chezmoi.os "darwin" -}}
-# Install Homebrew on a fresh Mac
-if ! command -v brew >/dev/null 2>&1; then
+# Install Homebrew if missing (macOS: /opt/homebrew or /usr/local; Linux: /home/linuxbrew).
+# On a fresh Linux box the installer needs sudo once for build deps (build-essential,
+# curl, file, git) — so the FIRST `chezmoi apply` must be run in an interactive shell.
+if ! command -v brew >/dev/null 2>&1 \
+  && [ ! -x /opt/homebrew/bin/brew ] \
+  && [ ! -x /usr/local/bin/brew ] \
+  && [ ! -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
-# Make brew available in this non-login script
-eval "$(/opt/homebrew/bin/brew shellenv 2>/dev/null || /usr/local/bin/brew shellenv)"
 
+# Make brew available in this non-login script, wherever it landed.
+for brewbin in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+  [ -x "$brewbin" ] && eval "$("$brewbin" shellenv)" && break
+done
+
+# --- CLI tools (shared across macOS and Linux) ---
 brew bundle --no-lock --file=/dev/stdin <<'BREWFILE'
 tap "hashicorp/tap"
 
@@ -50,16 +58,20 @@ brew "hashicorp/tap/terraform"
 brew "jq"
 brew "bottom"
 brew "tlrc"
+BREWFILE
 
+{{ if eq .chezmoi.os "darwin" -}}
+# --- macOS-only GUI apps & fonts (casks don't exist on Linuxbrew) ---
+brew bundle --no-lock --file=/dev/stdin <<'BREWFILE'
 # Apps
 cask "iterm2"
 
 # Fonts (Nerd Font for LazyVim / terminal icons)
 cask "font-hack-nerd-font"
 BREWFILE
+{{ end -}}
 
 # bun is distributed via its own installer (lives in ~/.bun), not Homebrew
 if ! command -v bun >/dev/null 2>&1 && [ ! -x "$HOME/.bun/bin/bun" ]; then
   curl -fsSL https://bun.sh/install | bash
 fi
-{{ end -}}
