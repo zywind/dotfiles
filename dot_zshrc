@@ -13,7 +13,6 @@ fi
 # (e.g. snapshotting harnesses) still get these.
 [[ -f ~/.env.secrets ]] && source ~/.env.secrets   # API keys / env, needed by scripts
 [[ -f ~/.zshrc.work ]] && source ~/.zshrc.work      # work-specific config
-alias grep='ugrep'                                  # fast, grep-compatible drop-in
 alias python='python3'                              # used by scripts too
 
 # Everything below is for interactive shells only (prompt, completions, tool
