@@ -62,10 +62,13 @@ alias v='nvim'
 alias tf='terraform'
 alias grep='ugrep'                                   # re-assert over oh-my-zsh's grep alias
 alias cat='bat --paging=never'                       # highlighted cat (plain when piped)
-alias ls='eza'                                       # eza as ls — safe: interactive-only via guard
-alias ll='eza -lah --git --group-directories-first'  # long, all, git status
-alias la='eza -a'                                    # all incl. dotfiles
-alias lt='eza --tree --level=2'                      # tree, 2 levels deep
+alias ls='eza --icons --group-directories-first'             # eza as ls — safe: interactive-only via guard
+alias ll='eza -lah --icons --git --git-repos --header --smart-group --color-scale=all --time-style=relative --group-directories-first'  # rich long view
+alias la='eza -a --icons --group-directories-first'          # all incl. dotfiles
+alias lt='eza --tree --icons --level=2 --group-directories-first'  # tree, 2 levels deep
+alias lsize='eza -lah --icons --sort=size --reverse'         # biggest files first
+alias lmod='eza -lah --icons --sort=modified'                # most recently changed last
+alias ltt='eza --tree --icons --level=3 --git-ignore'        # deeper tree, skip gitignored
 alias x='ouch decompress'                            # extract any archive
 alias lg='lazygit'                                   # git TUI
 
