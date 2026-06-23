@@ -22,6 +22,7 @@ done
 # --- CLI tools (shared across macOS and Linux) ---
 brew bundle --file=/dev/stdin <<'BREWFILE'
 tap "hashicorp/tap"
+tap "modem-dev/tap"
 
 # Shell + prompt
 brew "starship"
@@ -32,6 +33,7 @@ brew "git"
 brew "git-lfs"
 brew "git-delta"
 brew "lazygit"
+brew "modem-dev/tap/hunk" # terminal diff viewer; used as git core.pager
 
 # Navigation / search / completion
 brew "fzf"

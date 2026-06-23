@@ -19,7 +19,7 @@
 [init]
 	defaultBranch = main
 [core]
-	pager = delta
+	pager = hunk pager
 [interactive]
 	diffFilter = delta --color-only
 [delta]
@@ -28,6 +28,7 @@
 	file-style = bold yellow ul
 	file-decoration-style = none        # remove the file-header box
 	hunk-header-decoration-style = none # remove the hunk-header box
+	syntax-theme = Dracula
 [merge]
 	conflictStyle = zdiff3
 [diff]
