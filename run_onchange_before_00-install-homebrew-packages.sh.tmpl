@@ -19,6 +19,13 @@ for brewbin in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linux
   [ -x "$brewbin" ] && eval "$("$brewbin" shellenv)" && break
 done
 
+# Homebrew 6 requires third-party taps to be explicitly trusted before
+# `brew bundle` may load formulae from them. Older Homebrew versions do not
+# provide `brew trust`, so keep the setup compatible with those versions.
+if brew trust --help >/dev/null 2>&1; then
+  brew trust --tap hashicorp/tap modem-dev/tap
+fi
+
 # --- CLI tools (shared across macOS and Linux) ---
 brew bundle --file=/dev/stdin <<'BREWFILE'
 tap "hashicorp/tap"
