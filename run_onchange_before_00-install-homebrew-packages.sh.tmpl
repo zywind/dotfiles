@@ -59,7 +59,10 @@ if [ "$(printf '%s\n' "$required_mise" "$current_mise" | sort -V | head -n1)" !=
   mise self-update "$required_mise" --yes --no-plugins
 fi
 
-if ! command -v chezmoi >/dev/null 2>&1; then
+# Keep chezmoi independent of any system package manager. In particular, an
+# existing Linuxbrew binary must not prevent installation before Linuxbrew is
+# removed.
+if [ ! -x "$HOME/.local/bin/chezmoi" ]; then
   sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
 fi
 {{ end -}}
