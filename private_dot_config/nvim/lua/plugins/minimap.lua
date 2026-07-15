@@ -1,6 +1,6 @@
 -- VSCode-style minimap on the right, showing the whole file's shape with the
 -- current viewport highlighted. Requires the `code-minimap` binary on PATH
--- (installed via Homebrew in the chezmoi setup script).
+-- (installed portably by mise in the chezmoi setup).
 return {
   "wfxr/minimap.vim",
   event = "VeryLazy",

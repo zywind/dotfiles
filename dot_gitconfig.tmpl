@@ -1,6 +1,12 @@
+{{ if eq .chezmoi.os "linux" -}}
+[include]
+	# Rebuilt by dev-machine on connect; ignored harmlessly on generic Linux.
+	path = /opt/devmachine_assets/git/config
+{{ end -}}
 [user]
 	email = {{ .email }}
 	name = {{ .name }}
+	signingkey = {{ .chezmoi.homeDir }}/.ssh/id_ed25519.pub
 [push]
 	default = simple
 	# "push the current branch back to the branch whose changes are usually integrated into the current branch"
@@ -33,3 +39,7 @@
 	conflictStyle = zdiff3
 [diff]
 	colorMoved = default
+[gpg]
+	format = ssh
+[commit]
+	gpgsign = true

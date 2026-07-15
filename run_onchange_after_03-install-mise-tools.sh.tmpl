@@ -1,0 +1,10 @@
+#!/bin/bash
+# Re-run whenever the managed mise toolset changes.
+# mise-config-sha256: {{ include "private_dot_config/mise/config.toml.tmpl" | sha256sum }}
+set -eufo pipefail
+
+export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
+
+command -v mise >/dev/null 2>&1 || { echo "mise is not installed" >&2; exit 1; }
+mise install --yes
+mise reshim

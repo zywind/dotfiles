@@ -1,0 +1,46 @@
+min_version = "2026.7.6"
+
+[tools]
+# Language runtimes and package tools
+node = "lts"
+bun = "latest"
+uv = "latest"
+
+# Editor and its external dependencies
+neovim = "latest"
+rg = "latest"
+fd = "latest"
+lazygit = "latest"
+{{ if eq .chezmoi.os "linux" -}}
+# Upstream currently publishes code-minimap's Linux package through GitHub;
+# Homebrew supplies the native macOS build.
+"github:wfxr/code-minimap" = "latest"
+{{ end -}}
+
+# Cross-platform terminal and development tools
+bat = "latest"
+bottom = "latest"
+delta = "latest"
+direnv = "latest"
+{{ if eq .chezmoi.os "linux" -}}
+eza = "latest"
+{{ end -}}
+fzf = "latest"
+gh = "latest"
+git-lfs = "latest"
+"aqua:modem-dev/hunk" = "latest"
+jq = "latest"
+starship = "latest"
+{{ if eq .chezmoi.os "linux" -}}
+# tlrc's current macOS mise asset is x86_64-only; Homebrew supplies arm64.
+tlrc = "latest"
+{{ end -}}
+usage = "latest"
+zoxide = "latest"
+
+# Keep the workstation and dev pod on the same kubectl minor release.
+kubectl = "1.34.1"
+
+[settings]
+# Preserve fnm's per-directory behavior for .nvmrc and .node-version files.
+idiomatic_version_file_enable_tools = ["node"]

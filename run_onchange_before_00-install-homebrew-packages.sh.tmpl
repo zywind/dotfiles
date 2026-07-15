@@ -1,87 +1,68 @@
 #!/bin/bash
-# Installs Homebrew (if missing) and the CLI tools the dotfiles depend on.
-# run_onchange_: re-runs automatically whenever this file's contents change,
-# so adding a package below installs it on the next `chezmoi apply`.
+# Bootstrap only the platform-level tools needed before mise can take over.
+# Portable developer CLIs and runtimes are declared in ~/.config/mise/config.toml.
 set -eufo pipefail
 
-# Install Homebrew if missing (macOS: /opt/homebrew or /usr/local; Linux: /home/linuxbrew).
-# On a fresh Linux box the installer needs sudo once for build deps (build-essential,
-# curl, file, git) — so the FIRST `chezmoi apply` must be run in an interactive shell.
-if ! command -v brew >/dev/null 2>&1 \
-  && [ ! -x /opt/homebrew/bin/brew ] \
-  && [ ! -x /usr/local/bin/brew ] \
-  && [ ! -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
+export PATH="$HOME/.local/bin:$PATH"
+
+{{ if eq .chezmoi.os "darwin" -}}
+# Homebrew owns the macOS bootstrap layer: git, tmux, mise, chezmoi, and the
+# small number of tools that are not managed portably by mise.
+if ! command -v brew >/dev/null 2>&1 && [ ! -x /opt/homebrew/bin/brew ] && [ ! -x /usr/local/bin/brew ]; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
 
-# Make brew available in this non-login script, wherever it landed.
-for brewbin in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+for brewbin in /opt/homebrew/bin/brew /usr/local/bin/brew; do
   [ -x "$brewbin" ] && eval "$("$brewbin" shellenv)" && break
 done
 
-# Homebrew 6 requires third-party taps to be explicitly trusted before
-# `brew bundle` may load formulae from them. Older Homebrew versions do not
-# provide `brew trust`, so keep the setup compatible with those versions.
-if brew trust --help >/dev/null 2>&1; then
-  brew trust --tap hashicorp/tap modem-dev/tap
-fi
-
-# --- CLI tools (shared across macOS and Linux) ---
 brew bundle --file=/dev/stdin <<'BREWFILE'
-tap "hashicorp/tap"
-tap "modem-dev/tap"
-
-# Shell + prompt
-brew "starship"
-brew "tmux"
-
-# Git
+# Bootstrap and shell infrastructure
 brew "git"
-brew "git-lfs"
-brew "git-delta"
-brew "lazygit"
-brew "modem-dev/tap/hunk" # terminal diff viewer; used as git core.pager
-
-# Navigation / search / completion
-brew "fzf"
-brew "zoxide"
-brew "fd"
-brew "ripgrep"
-brew "ugrep"
-brew "eza"
-brew "bat"
-brew "ouch"
-
-# Editor (LazyVim config is managed in ~/.config/nvim; lazy.nvim self-bootstraps)
-brew "neovim"
-brew "code-minimap" # minimap.vim renders the minimap via this binary
-
-# Dev environment
-brew "fnm"
-brew "uv"
-brew "direnv"
-brew "gh"
+brew "tmux"
+brew "mise"
 brew "chezmoi"
-brew "hashicorp/tap/terraform"
 
-# Utilities
-brew "jq"
-brew "bottom"
+# Native macOS exceptions whose current mise release assets are Linux-only or
+# x86_64-only. Linux installs their native builds through mise.
+brew "ouch"
+brew "code-minimap"
+brew "eza"
 brew "tlrc"
-BREWFILE
 
-{{ if eq .chezmoi.os "darwin" -}}
-# --- macOS-only GUI apps & fonts (casks don't exist on Linuxbrew) ---
-brew bundle --file=/dev/stdin <<'BREWFILE'
-# Apps
+# macOS terminal and font
 cask "iterm2"
-
-# Fonts (Nerd Font for LazyVim / terminal icons)
 cask "font-hack-nerd-font"
 BREWFILE
+{{ else if eq .chezmoi.os "linux" -}}
+# Linux only needs a small system foundation. The dev-machine image runs as
+# root; on a normal workstation use sudo when not already root.
+if command -v apt-get >/dev/null 2>&1; then
+  apt=(apt-get)
+  if [ "$(id -u)" -ne 0 ]; then
+    command -v sudo >/dev/null 2>&1 || { echo "sudo is required to install Linux bootstrap packages" >&2; exit 1; }
+    apt=(sudo apt-get)
+  fi
+  "${apt[@]}" update -qq
+  DEBIAN_FRONTEND=noninteractive "${apt[@]}" install -y \
+    ca-certificates curl git tmux zsh build-essential
+fi
+
+if ! command -v mise >/dev/null 2>&1; then
+  curl -fsSL https://mise.run | sh
+fi
+
+# This toolset relies on registry entries bundled with mise 2026.7.6+. Pin the
+# minimum bootstrap version without downgrading a newer installation.
+required_mise="2026.7.6"
+current_mise="$(mise --version | awk '{print $1}')"
+if [ "$(printf '%s\n' "$required_mise" "$current_mise" | sort -V | head -n1)" != "$required_mise" ]; then
+  mise self-update "$required_mise" --yes --no-plugins
+fi
+
+if ! command -v chezmoi >/dev/null 2>&1; then
+  sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+fi
 {{ end -}}
 
-# bun is distributed via its own installer (lives in ~/.bun), not Homebrew
-if ! command -v bun >/dev/null 2>&1 && [ ! -x "$HOME/.bun/bin/bun" ]; then
-  curl -fsSL https://bun.sh/install | bash
-fi
+command -v mise >/dev/null 2>&1 || { echo "mise bootstrap failed" >&2; exit 1; }

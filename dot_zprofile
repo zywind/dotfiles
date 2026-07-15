@@ -1,26 +1,21 @@
-# PATH and env setup for login shells.
-# Interactive-only setup (oh-my-zsh, completions, prompts, hooks) stays in .zshrc.
+# PATH and environment setup for login shells on macOS and Linux.
+# Interactive hooks and completions belong in .zshrc.
 
-# Auto-dedupe PATH (zsh keeps $path and $PATH in sync; -U makes $path unique)
 typeset -U path PATH
 
-# Homebrew (sets PATH, MANPATH, INFOPATH, HOMEBREW_* env vars).
-# macOS: /opt/homebrew (Apple Silicon) or /usr/local (Intel); Linux: /home/linuxbrew.
+# Preserve ephemeral credentials and helper binaries supplied by dev-machine.
+[[ -r /opt/devmachine_assets/env/forwarded-session.sh ]] && source /opt/devmachine_assets/env/forwarded-session.sh
+[[ -d /opt/devmachine_assets/bin ]] && path=(/opt/devmachine_assets/bin $path)
+
+# Homebrew is the macOS bootstrap package manager. Linux tools are installed
+# directly by apt or mise, though Linuxbrew remains supported when present.
 for brewbin in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
   [[ -x "$brewbin" ]] && eval "$("$brewbin" shellenv)" && break
 done
 
-# Default editor
+# mise itself and its shims must work in login, non-interactive, and recovery
+# shells. Interactive shells replace the shims with version-specific paths.
+path=($HOME/.local/bin $HOME/.local/share/mise/shims $path)
+
 export EDITOR='nvim'
 export VISUAL='nvim'
-
-# User-local binaries (~/.local/bin includes uv-managed Python shims)
-export PATH="$HOME/.local/bin:$PATH"
-
-# Ruby (Homebrew keg-only formula, macOS path) and user gems
-[[ -d /opt/homebrew/opt/ruby/bin ]] && export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
-export PATH="$HOME/.gem/bin:$PATH"
-
-# Bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"

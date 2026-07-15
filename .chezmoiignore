@@ -1,0 +1,8 @@
+README.md
+
+{{ if eq .chezmoi.os "darwin" -}}
+.config/lazygit
+{{ else -}}
+.config/iterm2
+Library
+{{ end -}}
