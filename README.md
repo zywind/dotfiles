@@ -8,7 +8,7 @@ mise on macOS and Linux; Homebrew or apt only provides the platform bootstrap.
 
 - **chezmoi:** configuration files and repeatable setup scripts
 - **mise:** Node, Bun, uv, Neovim, kubectl, and portable development CLIs
-- **Homebrew (macOS):** git, tmux, mise, chezmoi, iTerm2, fonts, and `ouch`
+- **Homebrew (macOS):** git, tmux, mise, chezmoi, iTerm2, fonts, and native exceptions
 - **apt (Ubuntu/Linux):** certificates, curl, git, tmux, zsh, and build tools
 - **dev-machine:** ephemeral credentials and managed shell hooks in
   `/opt/devmachine_assets`

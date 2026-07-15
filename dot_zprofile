@@ -3,13 +3,16 @@
 
 typeset -U path PATH
 
+# Use the same configuration root on macOS and Linux.
+export XDG_CONFIG_HOME="$HOME/.config"
+
 # Preserve ephemeral credentials and helper binaries supplied by dev-machine.
 [[ -r /opt/devmachine_assets/env/forwarded-session.sh ]] && source /opt/devmachine_assets/env/forwarded-session.sh
 [[ -d /opt/devmachine_assets/bin ]] && path=(/opt/devmachine_assets/bin $path)
 
 # Homebrew is the macOS bootstrap package manager. Linux tools are installed
-# directly by apt or mise, though Linuxbrew remains supported when present.
-for brewbin in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+# directly by apt or mise.
+for brewbin in /opt/homebrew/bin/brew /usr/local/bin/brew; do
   [[ -x "$brewbin" ]] && eval "$("$brewbin" shellenv)" && break
 done
 
