@@ -1,0 +1,44 @@
+[user]
+	email = {{ .email }}
+	name = {{ .name }}
+{{- if eq .chezmoi.os "darwin" }}
+	signingkey = {{ .chezmoi.homeDir }}/.ssh/id_ed25519.pub
+{{- end }}
+[push]
+	default = simple
+	# "push the current branch back to the branch whose changes are usually integrated into the current branch"
+	# "refuse to push if the upstream branch’s name is different from the local one"
+	# https://git-scm.com/docs/git-config#git-config-pushdefault
+
+	followTags = true
+	autoSetupRemote = true
+	# Because I get sick of telling git to do it manually
+	# https://git-scm.com/docs/git-config#git-config-pushfollowTags
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
+[init]
+	defaultBranch = main
+[core]
+	pager = hunk pager
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true    # use n / N to jump between diff sections
+	line-numbers = true
+	file-style = bold yellow ul
+	file-decoration-style = none        # remove the file-header box
+	hunk-header-decoration-style = none # remove the hunk-header box
+	syntax-theme = Dracula
+[merge]
+	conflictStyle = zdiff3
+[diff]
+	colorMoved = default
+{{ if eq .chezmoi.os "darwin" -}}
+[gpg]
+	format = ssh
+[commit]
+	gpgsign = true
+{{ end -}}

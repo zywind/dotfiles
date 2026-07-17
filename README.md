@@ -11,7 +11,12 @@ mise on macOS and Linux; Homebrew or apt only provides the platform bootstrap.
 - **Homebrew (macOS):** git, tmux, mise, chezmoi, iTerm2, fonts, and native exceptions
 - **apt (Ubuntu/Linux):** certificates, curl, git, tmux, zsh, and build tools
 - **dev-machine:** ephemeral credentials and managed shell hooks in
-  `/opt/devmachine_assets`
+  `/opt/devmachine_assets`, including the credential-bearing `~/.gitconfig`
+
+On Linux, chezmoi writes portable Git preferences to `~/.config/git/config`
+and leaves `~/.gitconfig` to the machine. Git reads both files, with the
+machine-owned file taking precedence. On macOS, chezmoi manages `~/.gitconfig`
+directly.
 
 Terraform, fnm, and ugrep are intentionally not installed. Node version files
 such as `.nvmrc` and `.node-version` are handled by mise.
@@ -85,7 +90,7 @@ Prefer editing through chezmoi so templates remain intact, then preview and
 apply the change locally:
 
 ```sh
-chezmoi edit ~/.gitconfig
+chezmoi edit ~/.zshrc
 chezmoi diff
 chezmoi apply
 ```
