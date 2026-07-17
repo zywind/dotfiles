@@ -79,19 +79,51 @@ exec zsh -l
 
 ## Day-to-day updates
 
-Preview and apply changes:
+### Publish changes from one machine
+
+Prefer editing through chezmoi so templates remain intact, then preview and
+apply the change locally:
 
 ```sh
+chezmoi edit ~/.gitconfig
 chezmoi diff
 chezmoi apply
 ```
 
-Edit the source repository and inspect its Git state:
+If a non-template managed file was edited directly, copy it back into the
+source state first with `chezmoi re-add <path>`. Then commit and push from the
+source repository:
 
 ```sh
+chezmoi re-add ~/.tmux.conf  # only needed after editing the target directly
 chezmoi cd
 git status
+git diff
+git add -A
+git diff --cached
+git commit -m "Describe the dotfile changes"
+git push
 ```
+
+### Receive changes on another machine
+
+Pull first, inspect the resulting target changes, and then apply them:
+
+```sh
+chezmoi git pull
+chezmoi diff
+chezmoi apply
+```
+
+If `.chezmoi.toml.tmpl` changed, run `chezmoi init` after pulling to regenerate
+the local chezmoi configuration before previewing. To pull, regenerate that
+configuration, and apply everything in one step instead, use:
+
+```sh
+chezmoi update --init
+```
+
+### Update managed tools
 
 Update tool versions declared as `latest`, then remove unused cached versions:
 
